@@ -49,10 +49,16 @@ class ReportController extends Controller
             ->whereNot('status', 'cancelled');
 
         $paymentQuery = Payment::query()
-            ->whereBetween('payment_date', [$startDate, $endDate]);
+            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->whereHas('order', function ($q) {
+                $q->whereNot('status', 'cancelled');
+            });
 
         if ($type) {
             $orderQuery->where('type', $type);
+            $paymentQuery->whereHas('order', function ($q) use ($type) {
+                $q->where('type', $type);
+            });
         }
 
         $ordersByDate = $orderQuery
@@ -75,7 +81,7 @@ class ReportController extends Controller
 
         $paymentsByDate = $paymentQuery
             ->select(
-                DB::raw('payment_date as date'),
+                DB::raw('DATE(payment_date) as date'),
                 DB::raw('SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as income'),
                 DB::raw('SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as expense'),
                 DB::raw('SUM(CASE WHEN type = "income" AND method = "cash" THEN amount ELSE 0 END) as cash_income'),
@@ -83,7 +89,7 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN type = "income" AND method = "alipay" THEN amount ELSE 0 END) as alipay_income'),
                 DB::raw('SUM(CASE WHEN type = "income" AND method = "wechat" THEN amount ELSE 0 END) as wechat_income'),
             )
-            ->groupBy('payment_date')
+            ->groupBy(DB::raw('DATE(payment_date)'))
             ->get()
             ->keyBy('date');
 

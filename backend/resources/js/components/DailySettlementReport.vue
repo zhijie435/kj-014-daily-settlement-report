@@ -296,115 +296,115 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-[#e3e3e0] dark:divide-[#3E3E3A]">
-                <tr
-                  v-for="day in dailyData"
-                  :key="day.date"
-                  class="hover:bg-[#FDFDFC] dark:hover:bg-[#0a0a0a] transition-colors cursor-pointer"
-                  @click="toggleDayDetail(day.date)"
-                >
-                  <td class="px-4 py-3 sticky left-0 bg-white dark:bg-[#161615]">
-                    <div class="flex items-center gap-2">
-                      <svg v-if="expandedDays.includes(day.date)" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#706f6c] dark:text-[#A1A09A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
-                      <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#706f6c] dark:text-[#A1A09A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                      <div>
-                        <div class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
-                          {{ day.date }}
-                        </div>
-                        <div class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
-                          {{ getDayName(day.day_of_week) }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3 text-center">
-                    <span class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
-                      {{ day.orders.total }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-center">
-                    <span class="text-sm text-green-600 dark:text-green-400">
-                      {{ day.orders.completed }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
-                      ¥{{ formatNumber(day.amounts.total) }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span class="text-sm text-[#1b1b18] dark:text-[#EDEDEC]">
-                      ¥{{ formatNumber(day.amounts.sales) }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span class="text-sm text-blue-600 dark:text-blue-400">
-                      ¥{{ formatNumber(day.amounts.paid) }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span class="text-sm text-green-600 dark:text-green-400">
-                      ¥{{ formatNumber(day.payments.income) }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span class="text-sm text-[#f53003] dark:text-[#FF4433]">
-                      ¥{{ formatNumber(day.payments.expense) }}
-                    </span>
-                  </td>
-                  <td class="px-4 py-3 text-right">
-                    <span :class="[
-                      'text-sm font-medium',
-                      day.payments.net >= 0 ? 'text-green-600 dark:text-green-400' : 'text-[#f53003] dark:text-[#FF4433]'
-                    ]">
-                      ¥{{ formatNumber(day.payments.net) }}
-                    </span>
-                  </td>
-                </tr>
-                <tr v-if="expandedDays.includes(day.date)" v-for="day in dailyData" :key="'detail-' + day.date">
-                  <td colspan="9" class="px-4 py-4 bg-[#FDFDFC] dark:bg-[#0a0a0a]">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">订单明细</p>
-                        <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
-                          <p>采购: {{ day.orders.purchase }}</p>
-                          <p>分销: {{ day.orders.distributor }}</p>
-                          <p>代理: {{ day.orders.agent }}</p>
-                          <p>待处理: {{ day.orders.pending }}</p>
+                <template v-for="day in dailyData" :key="day.date">
+                  <tr
+                    class="hover:bg-[#FDFDFC] dark:hover:bg-[#0a0a0a] transition-colors cursor-pointer"
+                    @click="toggleDayDetail(day.date)"
+                  >
+                    <td class="px-4 py-3 sticky left-0 bg-white dark:bg-[#161615]">
+                      <div class="flex items-center gap-2">
+                        <svg v-if="expandedDays.includes(day.date)" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#706f6c] dark:text-[#A1A09A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#706f6c] dark:text-[#A1A09A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                        <div>
+                          <div class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
+                            {{ day.date }}
+                          </div>
+                          <div class="text-xs text-[#706f6c] dark:text-[#A1A09A]">
+                            {{ getDayName(day.day_of_week) }}
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">金额明细</p>
-                        <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
-                          <p>采购: ¥{{ formatNumber(day.amounts.purchase) }}</p>
-                          <p>销售: ¥{{ formatNumber(day.amounts.sales) }}</p>
-                          <p>已收: ¥{{ formatNumber(day.amounts.paid) }}</p>
-                          <p>未收: ¥{{ formatNumber(day.amounts.unpaid) }}</p>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                      <span class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
+                        {{ day.orders.total }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                      <span class="text-sm text-green-600 dark:text-green-400">
+                        {{ day.orders.completed }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">
+                        ¥{{ formatNumber(day.amounts.total) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="text-sm text-[#1b1b18] dark:text-[#EDEDEC]">
+                        ¥{{ formatNumber(day.amounts.sales) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="text-sm text-blue-600 dark:text-blue-400">
+                        ¥{{ formatNumber(day.amounts.paid) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="text-sm text-green-600 dark:text-green-400">
+                        ¥{{ formatNumber(day.payments.income) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span class="text-sm text-[#f53003] dark:text-[#FF4433]">
+                        ¥{{ formatNumber(day.payments.expense) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <span :class="[
+                        'text-sm font-medium',
+                        day.payments.net >= 0 ? 'text-green-600 dark:text-green-400' : 'text-[#f53003] dark:text-[#FF4433]'
+                      ]">
+                        ¥{{ formatNumber(day.payments.net) }}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr v-if="expandedDays.includes(day.date)">
+                    <td colspan="9" class="px-4 py-4 bg-[#FDFDFC] dark:bg-[#0a0a0a]">
+                      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                          <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">订单明细</p>
+                          <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
+                            <p>采购: {{ day.orders.purchase }}</p>
+                            <p>分销: {{ day.orders.distributor }}</p>
+                            <p>代理: {{ day.orders.agent }}</p>
+                            <p>待处理: {{ day.orders.pending }}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">金额明细</p>
+                          <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
+                            <p>采购: ¥{{ formatNumber(day.amounts.purchase) }}</p>
+                            <p>销售: ¥{{ formatNumber(day.amounts.sales) }}</p>
+                            <p>已收: ¥{{ formatNumber(day.amounts.paid) }}</p>
+                            <p>未收: ¥{{ formatNumber(day.amounts.unpaid) }}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">支付方式</p>
+                          <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
+                            <p>现金: ¥{{ formatNumber(day.payments.by_method.cash) }}</p>
+                            <p>银行: ¥{{ formatNumber(day.payments.by_method.bank_transfer) }}</p>
+                            <p>支付宝: ¥{{ formatNumber(day.payments.by_method.alipay) }}</p>
+                            <p>微信: ¥{{ formatNumber(day.payments.by_method.wechat) }}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">收支汇总</p>
+                          <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
+                            <p>收入: ¥{{ formatNumber(day.payments.income) }}</p>
+                            <p>支出: ¥{{ formatNumber(day.payments.expense) }}</p>
+                            <p class="font-medium">净额: <span :class="day.payments.net >= 0 ? 'text-green-600 dark:text-green-400' : 'text-[#f53003] dark:text-[#FF4433]'">¥{{ formatNumber(day.payments.net) }}</span></p>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">支付方式</p>
-                        <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
-                          <p>现金: ¥{{ formatNumber(day.payments.by_method.cash) }}</p>
-                          <p>银行: ¥{{ formatNumber(day.payments.by_method.bank_transfer) }}</p>
-                          <p>支付宝: ¥{{ formatNumber(day.payments.by_method.alipay) }}</p>
-                          <p>微信: ¥{{ formatNumber(day.payments.by_method.wechat) }}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="text-xs text-[#706f6c] dark:text-[#A1A09A] mb-1">收支汇总</p>
-                        <div class="text-sm text-[#1b1b18] dark:text-[#EDEDEC] space-y-1">
-                          <p>收入: ¥{{ formatNumber(day.payments.income) }}</p>
-                          <p>支出: ¥{{ formatNumber(day.payments.expense) }}</p>
-                          <p class="font-medium">净额: <span :class="day.payments.net >= 0 ? 'text-green-600 dark:text-green-400' : 'text-[#f53003] dark:text-[#FF4433]'">¥{{ formatNumber(day.payments.net) }}</span></p>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </div>
