@@ -19,7 +19,7 @@ class ReportController extends Controller
         $validated = $request->validate([
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
-            'type' => 'nullable|in:supplier_purchase,distributor_order,agent_order',
+            'type' => 'nullable|in:supplier_purchase,distributor_order,agent_order,all',
         ]);
 
         $dateFrom = $validated['date_from'] ?? now()->subDays(30)->format('Y-m-d');
@@ -28,7 +28,12 @@ class ReportController extends Controller
         $startDate = \Carbon\Carbon::parse($dateFrom)->startOfDay();
         $endDate = \Carbon\Carbon::parse($dateTo)->endOfDay();
 
-        $dailyData = $this->generateDailyData($startDate, $endDate, $validated['type'] ?? null);
+        $type = $validated['type'] ?? null;
+        if ($type === 'all') {
+            $type = null;
+        }
+
+        $dailyData = $this->generateDailyData($startDate, $endDate, $type);
 
         $summary = $this->calculateSummary($dailyData);
 
@@ -237,7 +242,7 @@ class ReportController extends Controller
         $validated = $request->validate([
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date',
-            'type' => 'nullable|in:supplier_purchase,distributor_order,agent_order',
+            'type' => 'nullable|in:supplier_purchase,distributor_order,agent_order,all',
             'format' => 'nullable|in:csv,excel',
         ]);
 
@@ -248,7 +253,12 @@ class ReportController extends Controller
         $startDate = \Carbon\Carbon::parse($dateFrom)->startOfDay();
         $endDate = \Carbon\Carbon::parse($dateTo)->endOfDay();
 
-        $dailyData = $this->generateDailyData($startDate, $endDate, $validated['type'] ?? null);
+        $type = $validated['type'] ?? null;
+        if ($type === 'all') {
+            $type = null;
+        }
+
+        $dailyData = $this->generateDailyData($startDate, $endDate, $type);
         $summary = $this->calculateSummary($dailyData);
 
         if ($format === 'csv') {

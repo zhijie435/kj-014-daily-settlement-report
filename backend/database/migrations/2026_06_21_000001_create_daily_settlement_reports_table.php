@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('daily_settlement_reports', function (Blueprint $table) {
             $table->id();
-            $table->date('report_date')->unique();
+            $table->date('report_date');
             $table->enum('type', ['supplier_purchase', 'distributor_order', 'agent_order', 'all'])->default('all');
+            $table->unique(['report_date', 'type']);
 
             $table->integer('total_orders')->default(0);
             $table->integer('purchase_orders')->default(0);
