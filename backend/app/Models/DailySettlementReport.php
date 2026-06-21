@@ -69,12 +69,12 @@ class DailySettlementReport extends Model
 
         $orderQuery = Order::query()
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->whereNot('status', 'cancelled');
+            ->where('status', '!=', 'cancelled');
 
         $paymentQuery = Payment::query()
             ->whereBetween('payment_date', [$startDate, $endDate])
             ->whereHas('order', function ($q) {
-                $q->whereNot('status', 'cancelled');
+                $q->where('status', '!=', 'cancelled');
             });
 
         if ($type !== 'all') {

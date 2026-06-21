@@ -34,10 +34,17 @@ return new class extends Migration
                 }
                 foreach ($indexGroups as $name => $columns) {
                     sort($columns);
+                    $currentIndexRow = null;
+                    foreach ($indexRows as $row) {
+                        if ($row->Key_name === $name) {
+                            $currentIndexRow = $row;
+                            break;
+                        }
+                    }
                     $indexes[] = [
                         'name' => $name,
                         'columns' => $columns,
-                        'unique' => $indexRows[0]->Non_unique == 0,
+                        'unique' => $currentIndexRow?->Non_unique == 0,
                     ];
                 }
             } elseif ($driver === 'pgsql') {
