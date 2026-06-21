@@ -81,21 +81,13 @@ class DailySettlementReport extends Model
                 DB::raw('SUM(CASE WHEN type = "supplier_purchase" THEN 1 ELSE 0 END) as purchase_orders'),
                 DB::raw('SUM(CASE WHEN type = "distributor_order" THEN 1 ELSE 0 END) as distributor_orders'),
                 DB::raw('SUM(CASE WHEN type = "agent_order" THEN 1 ELSE 0 END) as agent_orders'),
+                DB::raw('SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed_orders'),
                 DB::raw('SUM(CASE WHEN status = "pending" THEN 1 ELSE 0 END) as pending_orders'),
                 DB::raw('SUM(total) as total_amount'),
                 DB::raw('SUM(CASE WHEN type = "supplier_purchase" THEN total ELSE 0 END) as purchase_amount'),
                 DB::raw('SUM(CASE WHEN type != "supplier_purchase" THEN total ELSE 0 END) as sales_amount'),
             )
             ->first();
-
-        $completedOrders = Order::query()
-            ->whereBetween('completed_at', [$startDate, $endDate])
-            ->where('status', 'completed')
-            ->whereNot('status', 'cancelled')
-            ->when($type !== 'all', function ($q) use ($type) {
-                $q->where('type', $type);
-            })
-            ->count();
 
         $paymentStats = $paymentQuery
             ->select(
@@ -117,7 +109,7 @@ class DailySettlementReport extends Model
             'purchase_orders' => (int) ($orderStats?->purchase_orders ?? 0),
             'distributor_orders' => (int) ($orderStats?->distributor_orders ?? 0),
             'agent_orders' => (int) ($orderStats?->agent_orders ?? 0),
-            'completed_orders' => $completedOrders,
+            'completed_orders' => (int) ($orderStats?->completed_orders ?? 0),
             'pending_orders' => (int) ($orderStats?->pending_orders ?? 0),
             'total_amount' => (float) $totalAmount,
             'purchase_amount' => (float) ($orderStats?->purchase_amount ?? 0),
