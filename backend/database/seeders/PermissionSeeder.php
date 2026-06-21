@@ -23,6 +23,10 @@ class PermissionSeeder extends Seeder
                 'payment.view', 'payment.create', 'payment.edit', 'payment.delete',
                 'inventory.view', 'inventory.edit',
                 'report.view', 'report.manage',
+                'report.generate', 'report.regenerate',
+                'report.confirm', 'report.audit',
+                'report.lock', 'report.export',
+                'report.delete',
                 'user.manage',
             ],
             'supplier' => [

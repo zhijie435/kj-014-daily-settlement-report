@@ -60,6 +60,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/daily-settlement-reports/export', [DailySettlementReportController::class, 'export'])->name('daily-settlement-reports.export');
         Route::post('/daily-settlement-reports/generate-batch', [DailySettlementReportController::class, 'generateBatch'])->name('daily-settlement-reports.generate-batch');
         Route::post('/daily-settlement-reports/{dailySettlementReport}/regenerate', [DailySettlementReportController::class, 'regenerate'])->name('daily-settlement-reports.regenerate');
+        Route::post('/daily-settlement-reports/{dailySettlementReport}/confirm', [DailySettlementReportController::class, 'confirm'])->name('daily-settlement-reports.confirm');
+        Route::post('/daily-settlement-reports/{dailySettlementReport}/audit', [DailySettlementReportController::class, 'audit'])->name('daily-settlement-reports.audit');
+        Route::post('/daily-settlement-reports/{dailySettlementReport}/lock', [DailySettlementReportController::class, 'lock'])->name('daily-settlement-reports.lock');
+        Route::post('/daily-settlement-reports/{dailySettlementReport}/revert-to-draft', [DailySettlementReportController::class, 'revertToDraft'])->name('daily-settlement-reports.revert-to-draft');
         Route::apiResource('daily-settlement-reports', DailySettlementReportController::class);
     });
 
