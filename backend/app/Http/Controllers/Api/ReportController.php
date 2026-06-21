@@ -68,14 +68,30 @@ class ReportController extends Controller
                 DB::raw('SUM(CASE WHEN type = "supplier_purchase" THEN 1 ELSE 0 END) as purchase_orders'),
                 DB::raw('SUM(CASE WHEN type = "distributor_order" THEN 1 ELSE 0 END) as distributor_orders'),
                 DB::raw('SUM(CASE WHEN type = "agent_order" THEN 1 ELSE 0 END) as agent_orders'),
-                DB::raw('SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed_orders'),
                 DB::raw('SUM(CASE WHEN status = "pending" THEN 1 ELSE 0 END) as pending_orders'),
                 DB::raw('SUM(total) as total_amount'),
                 DB::raw('SUM(CASE WHEN type = "supplier_purchase" THEN total ELSE 0 END) as purchase_amount'),
                 DB::raw('SUM(CASE WHEN type != "supplier_purchase" THEN total ELSE 0 END) as sales_amount'),
-                DB::raw('SUM(paid_amount) as paid_amount'),
             )
             ->groupBy(DB::raw('DATE(created_at)'))
+            ->get()
+            ->keyBy('date');
+
+        $completedOrdersQuery = Order::query()
+            ->whereBetween('completed_at', [$startDate, $endDate])
+            ->where('status', 'completed')
+            ->whereNot('status', 'cancelled');
+
+        if ($type) {
+            $completedOrdersQuery->where('type', $type);
+        }
+
+        $completedOrdersByDate = $completedOrdersQuery
+            ->select(
+                DB::raw('DATE(completed_at) as date'),
+                DB::raw('COUNT(*) as completed_orders'),
+            )
+            ->groupBy(DB::raw('DATE(completed_at)'))
             ->get()
             ->keyBy('date');
 
@@ -99,6 +115,7 @@ class ReportController extends Controller
         while ($currentDate->lte($endDate)) {
             $dateStr = $currentDate->format('Y-m-d');
             $orders = $ordersByDate->get($dateStr);
+            $completedOrders = $completedOrdersByDate->get($dateStr);
             $payments = $paymentsByDate->get($dateStr);
 
             $income = $payments?->income ?? 0;
@@ -113,15 +130,15 @@ class ReportController extends Controller
                     'purchase' => (int) ($orders?->purchase_orders ?? 0),
                     'distributor' => (int) ($orders?->distributor_orders ?? 0),
                     'agent' => (int) ($orders?->agent_orders ?? 0),
-                    'completed' => (int) ($orders?->completed_orders ?? 0),
+                    'completed' => (int) ($completedOrders?->completed_orders ?? 0),
                     'pending' => (int) ($orders?->pending_orders ?? 0),
                 ],
                 'amounts' => [
                     'total' => (float) ($orders?->total_amount ?? 0),
                     'purchase' => (float) ($orders?->purchase_amount ?? 0),
                     'sales' => (float) ($orders?->sales_amount ?? 0),
-                    'paid' => (float) ($orders?->paid_amount ?? 0),
-                    'unpaid' => (float) (($orders?->total_amount ?? 0) - ($orders?->paid_amount ?? 0)),
+                    'paid' => (float) $income,
+                    'unpaid' => (float) (($orders?->total_amount ?? 0) - $income),
                 ],
                 'payments' => [
                     'income' => (float) $income,
