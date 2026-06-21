@@ -10,6 +10,8 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('category.view');
+
         $categories = Category::with('children')
             ->whereNull('parent_id')
             ->orderBy('sort', 'asc')
@@ -20,6 +22,8 @@ class CategoryController extends Controller
 
     public function all(Request $request)
     {
+        $this->authorize('category.view');
+
         $query = Category::query();
 
         if ($request->has('is_active')) {
@@ -33,6 +37,8 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
+        $this->authorize('category.view');
+
         return response()->json($category->load(['parent', 'children', 'products']));
     }
 
@@ -93,6 +99,8 @@ class CategoryController extends Controller
 
     public function tree()
     {
+        $this->authorize('category.view');
+
         $categories = Category::with('children.children')
             ->whereNull('parent_id')
             ->where('is_active', true)

@@ -23,11 +23,11 @@ class DailySettlementReportController extends Controller
         $query = DailySettlementReport::query();
 
         if (isset($validated['date_from'])) {
-            $query->where('report_date', '>=', $validated['date_from']);
+            $query->whereDate('report_date', '>=', $validated['date_from']);
         }
 
         if (isset($validated['date_to'])) {
-            $query->where('report_date', '<=', $validated['date_to']);
+            $query->whereDate('report_date', '<=', $validated['date_to']);
         }
 
         if (isset($validated['type'])) {
@@ -172,7 +172,8 @@ class DailySettlementReportController extends Controller
         $type = $validated['type'] ?? 'all';
 
         $query = DailySettlementReport::query()
-            ->whereBetween('report_date', [$dateFrom, $dateTo])
+            ->whereDate('report_date', '>=', $dateFrom)
+            ->whereDate('report_date', '<=', $dateTo)
             ->where('type', $type);
 
         $summary = $query->select(
@@ -250,7 +251,8 @@ class DailySettlementReportController extends Controller
         $type = $validated['type'] ?? 'all';
 
         $reports = DailySettlementReport::query()
-            ->whereBetween('report_date', [$dateFrom, $dateTo])
+            ->whereDate('report_date', '>=', $dateFrom)
+            ->whereDate('report_date', '<=', $dateTo)
             ->where('type', $type)
             ->orderBy('report_date', 'desc')
             ->get();

@@ -50,6 +50,15 @@ class DailySettlementReport extends Model
         return $this->belongsTo(User::class, 'generated_by');
     }
 
+    public function setReportDateAttribute($value): void
+    {
+        if ($value instanceof \Carbon\CarbonInterface) {
+            $this->attributes['report_date'] = $value->format('Y-m-d');
+        } else {
+            $this->attributes['report_date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+        }
+    }
+
     public static function generateForDate($date, $type = 'all', $userId = null): self
     {
         $reportDate = \Carbon\Carbon::parse($date)->format('Y-m-d');

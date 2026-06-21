@@ -18,6 +18,7 @@ class PermissionSeeder extends Seeder
                 'supplier.view', 'supplier.create', 'supplier.edit', 'supplier.delete',
                 'distributor.view', 'distributor.create', 'distributor.edit', 'distributor.delete',
                 'product.view', 'product.create', 'product.edit', 'product.delete',
+                'category.view', 'category.manage',
                 'order.view', 'order.create', 'order.edit', 'order.delete', 'order.approve',
                 'payment.view', 'payment.create', 'payment.edit', 'payment.delete',
                 'inventory.view', 'inventory.edit',
@@ -26,11 +27,13 @@ class PermissionSeeder extends Seeder
             ],
             'supplier' => [
                 'product.view', 'product.create', 'product.edit',
+                'category.view',
                 'order.view', 'order.ship',
                 'inventory.view', 'inventory.edit',
             ],
             'distributor' => [
                 'product.view',
+                'category.view',
                 'order.view', 'order.create',
                 'payment.view',
             ],

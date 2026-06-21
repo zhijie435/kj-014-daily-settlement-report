@@ -46,6 +46,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/reports/daily-settlement', [ReportController::class, 'dailySettlement'])->name('reports.daily-settlement');
         Route::get('/reports/daily-settlement/export', [ReportController::class, 'exportDailySettlement'])->name('reports.daily-settlement.export');
 
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categories/all', [CategoryController::class, 'all'])->name('categories.all');
+        Route::get('/categories/tree', [CategoryController::class, 'tree'])->name('categories.tree');
+        Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::middleware('user_type:platform')->group(function () {
+            Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        });
+
         Route::get('/daily-settlement-reports/summary', [DailySettlementReportController::class, 'summary'])->name('daily-settlement-reports.summary');
         Route::get('/daily-settlement-reports/export', [DailySettlementReportController::class, 'export'])->name('daily-settlement-reports.export');
         Route::post('/daily-settlement-reports/generate-batch', [DailySettlementReportController::class, 'generateBatch'])->name('daily-settlement-reports.generate-batch');
