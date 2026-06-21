@@ -56,7 +56,16 @@ class DailySettlementReport extends Model
         $startDate = \Carbon\Carbon::parse($date)->startOfDay();
         $endDate = \Carbon\Carbon::parse($date)->endOfDay();
 
-        $report = self::firstOrNew(['report_date' => $reportDate, 'type' => $type]);
+        $report = self::withTrashed()
+            ->whereDate('report_date', $reportDate)
+            ->where('type', $type)
+            ->first();
+
+        if (!$report) {
+            $report = new self(['report_date' => $reportDate, 'type' => $type]);
+        } elseif ($report->trashed()) {
+            $report->restore();
+        }
 
         $orderQuery = Order::query()
             ->whereBetween('created_at', [$startDate, $endDate])
@@ -104,6 +113,14 @@ class DailySettlementReport extends Model
         $expense = $paymentStats?->expense ?? 0;
         $totalAmount = $orderStats?->total_amount ?? 0;
 
+        if ($type === 'supplier_purchase') {
+            $paidAmount = $expense;
+            $unpaidAmount = $totalAmount - $expense;
+        } else {
+            $paidAmount = $income;
+            $unpaidAmount = $totalAmount - $income;
+        }
+
         $report->fill([
             'total_orders' => (int) ($orderStats?->total_orders ?? 0),
             'purchase_orders' => (int) ($orderStats?->purchase_orders ?? 0),
@@ -114,8 +131,8 @@ class DailySettlementReport extends Model
             'total_amount' => (float) $totalAmount,
             'purchase_amount' => (float) ($orderStats?->purchase_amount ?? 0),
             'sales_amount' => (float) ($orderStats?->sales_amount ?? 0),
-            'paid_amount' => (float) $income,
-            'unpaid_amount' => (float) ($totalAmount - $income),
+            'paid_amount' => (float) $paidAmount,
+            'unpaid_amount' => (float) $unpaidAmount,
             'total_income' => (float) $income,
             'total_expense' => (float) $expense,
             'net_profit' => (float) ($income - $expense),

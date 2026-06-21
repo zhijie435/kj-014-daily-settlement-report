@@ -107,6 +107,15 @@ class ReportController extends Controller
 
             $income = $payments?->income ?? 0;
             $expense = $payments?->expense ?? 0;
+            $totalAmount = $orders?->total_amount ?? 0;
+
+            if ($type === 'supplier_purchase') {
+                $paidAmount = $expense;
+                $unpaidAmount = $totalAmount - $expense;
+            } else {
+                $paidAmount = $income;
+                $unpaidAmount = $totalAmount - $income;
+            }
 
             $dailyData[] = [
                 'date' => $dateStr,
@@ -121,11 +130,11 @@ class ReportController extends Controller
                     'pending' => (int) ($orders?->pending_orders ?? 0),
                 ],
                 'amounts' => [
-                    'total' => (float) ($orders?->total_amount ?? 0),
+                    'total' => (float) $totalAmount,
                     'purchase' => (float) ($orders?->purchase_amount ?? 0),
                     'sales' => (float) ($orders?->sales_amount ?? 0),
-                    'paid' => (float) $income,
-                    'unpaid' => (float) (($orders?->total_amount ?? 0) - $income),
+                    'paid' => (float) $paidAmount,
+                    'unpaid' => (float) $unpaidAmount,
                 ],
                 'payments' => [
                     'income' => (float) $income,

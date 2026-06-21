@@ -36,26 +36,34 @@ class PermissionSeeder extends Seeder
             ],
         ];
 
+        $guardName = config('auth.defaults.guard');
+
         foreach ($permissions as $roleName => $perms) {
             foreach ($perms as $perm) {
-                Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'sanctum']);
+                Permission::firstOrCreate(['name' => $perm, 'guard_name' => $guardName]);
             }
         }
 
-        $platformRole = Role::firstOrCreate(['name' => 'platform', 'guard_name' => 'sanctum']);
+        $platformRole = Role::firstOrCreate(['name' => 'platform', 'guard_name' => $guardName]);
         $platformRole->syncPermissions($permissions['platform']);
 
-        $supplierRole = Role::firstOrCreate(['name' => 'supplier', 'guard_name' => 'sanctum']);
+        $supplierRole = Role::firstOrCreate(['name' => 'supplier', 'guard_name' => $guardName]);
         $supplierRole->syncPermissions($permissions['supplier']);
 
-        $distributorRole = Role::firstOrCreate(['name' => 'distributor', 'guard_name' => 'sanctum']);
+        $distributorRole = Role::firstOrCreate(['name' => 'distributor', 'guard_name' => $guardName]);
         $distributorRole->syncPermissions($permissions['distributor']);
 
-        $agentRole = Role::firstOrCreate(['name' => 'regional_agent', 'guard_name' => 'sanctum']);
-        $agentRole->syncPermissions(array_merge($permissions['distributor'], [
+        $agentPermissions = array_merge($permissions['distributor'], [
             'distributor.view.subordinate',
             'order.view.subordinate',
-        ]));
+        ]);
+
+        foreach ($agentPermissions as $perm) {
+            Permission::firstOrCreate(['name' => $perm, 'guard_name' => $guardName]);
+        }
+
+        $agentRole = Role::firstOrCreate(['name' => 'regional_agent', 'guard_name' => $guardName]);
+        $agentRole->syncPermissions($agentPermissions);
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@shearerline.com'],
