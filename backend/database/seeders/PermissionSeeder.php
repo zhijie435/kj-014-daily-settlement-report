@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
                 'order.view', 'order.create', 'order.edit', 'order.delete', 'order.approve',
                 'payment.view', 'payment.create', 'payment.edit', 'payment.delete',
                 'inventory.view', 'inventory.edit',
-                'report.view',
+                'report.view', 'report.manage',
                 'user.manage',
             ],
             'supplier' => [

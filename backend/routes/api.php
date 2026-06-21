@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\DailySettlementReportController;
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 
@@ -44,6 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/reports/daily-settlement', [ReportController::class, 'dailySettlement'])->name('reports.daily-settlement');
         Route::get('/reports/daily-settlement/export', [ReportController::class, 'exportDailySettlement'])->name('reports.daily-settlement.export');
+
+        Route::get('/daily-settlement-reports/summary', [DailySettlementReportController::class, 'summary'])->name('daily-settlement-reports.summary');
+        Route::get('/daily-settlement-reports/export', [DailySettlementReportController::class, 'export'])->name('daily-settlement-reports.export');
+        Route::post('/daily-settlement-reports/generate-batch', [DailySettlementReportController::class, 'generateBatch'])->name('daily-settlement-reports.generate-batch');
+        Route::post('/daily-settlement-reports/{dailySettlementReport}/regenerate', [DailySettlementReportController::class, 'regenerate'])->name('daily-settlement-reports.regenerate');
+        Route::apiResource('daily-settlement-reports', DailySettlementReportController::class);
     });
 
     Route::middleware('user_type:platform,supplier')->group(function () {
